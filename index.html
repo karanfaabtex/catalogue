@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KARAN FAABTEX PVT LTD | E-Catalogues</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  :root{--bg:#faf7f2;--card:#fff;--ink:#1f1a17;--muted:#7a716a;--accent:#7a1f2b;--accent2:#a8323f;--gold:#c8a24a;--line:#eae3d9;--radius:18px}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input{-webkit-user-select:text;user-select:text}
+  .hidden{display:none!important}
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:14px 20px;
+    background:rgba(250,247,242,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .brand{font-family:'Playfair Display',serif;font-weight:700;font-size:20px;letter-spacing:.3px;color:var(--accent)}
+  .ghost{background:none;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font:500 13px Inter;color:var(--muted);cursor:pointer}
+  .screen{min-height:calc(100vh - 60px);padding:28px 18px 60px}
+  .center-wrap{display:flex;align-items:center;justify-content:center}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px;max-width:420px;width:100%;
+    box-shadow:0 10px 40px rgba(60,30,20,.07)}
+  h1,h2{font-family:'Playfair Display',serif;margin:0 0 8px}
+  h2{font-size:26px}
+  p.sub{color:var(--muted);margin:0 0 22px;line-height:1.5;font-size:14.5px}
+  label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin:14px 0 6px;text-transform:uppercase;letter-spacing:.6px}
+  .field{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;background:#fff;overflow:hidden;transition:border .2s}
+  .field:focus-within{border-color:var(--accent)}
+  .field span{padding:0 4px 0 14px;color:var(--muted);font-weight:500}
+  .field input{flex:1;border:0;outline:0;padding:14px;font:500 16px Inter;background:transparent;min-width:0}
+  .otp input{letter-spacing:10px;text-align:center;font-size:22px}
+  .btn{display:block;width:100%;margin-top:22px;padding:15px;border:0;border-radius:12px;background:var(--accent);color:#fff;
+    font:600 15.5px Inter;cursor:pointer;transition:background .2s,transform .1s}
+  .btn:hover{background:var(--accent2)} .btn:active{transform:scale(.99)} .btn:disabled{opacity:.6;cursor:wait}
+  .link{background:none;border:0;color:var(--accent);font:500 14px Inter;cursor:pointer;padding:0;margin-top:16px}
+  .link:disabled{color:var(--muted);cursor:default}
+  .err{color:#b42318;font-size:13.5px;margin-top:12px;min-height:18px}
+  .note{font-size:12.5px;color:var(--muted);margin-top:18px;text-align:center}
+  .testcode{background:#fff7e0;border:1px dashed var(--gold);border-radius:10px;padding:10px;font-size:13px;margin-bottom:6px}
+  .spinner{width:38px;height:38px;border:3px solid var(--line);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading{text-align:center;color:var(--muted)}
+  /* Library */
+  .lib{max-width:1100px;margin:0 auto}
+  .hello{margin:4px 0 26px}
+  .hello h1{font-size:30px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:20px}
+  .cat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;cursor:pointer;
+    transition:transform .2s,box-shadow .2s;display:flex;flex-direction:column}
+  .cat:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(60,30,20,.12)}
+  .cover{aspect-ratio:4/3;display:flex;align-items:flex-end;padding:18px;color:#fff;position:relative;overflow:hidden}
+  .cover:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.06) 0 2px,transparent 2px 14px)}
+  .cover b{position:relative;font-family:'Playfair Display',serif;font-size:22px;line-height:1.2;text-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .cat .meta{padding:14px 16px 18px}
+  .cat .meta p{margin:0 0 12px;color:var(--muted);font-size:13.5px;line-height:1.45;min-height:19px}
+  .cat .meta span{font-weight:600;color:var(--accent);font-size:14px}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--radius);padding:40px;text-align:center;color:var(--muted)}
+  /* Viewer */
+  #scrViewer{padding:0}
+  .vbar{position:sticky;top:60px;z-index:15;display:flex;align-items:center;gap:12px;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line)}
+  .vbar h3{flex:1;margin:0;font:600 15px Inter;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pill{font:600 12.5px Inter;color:var(--muted);background:var(--bg);border-radius:999px;padding:6px 12px;white-space:nowrap}
+  .progress{height:3px;background:var(--line)} .progress div{height:100%;width:0;background:var(--accent);transition:width .3s}
+  #pages{max-width:980px;margin:0 auto;padding:18px 12px 80px;transition:filter .2s}
+  .page{position:relative;background:#fff;margin:0 auto 16px;border-radius:6px;box-shadow:0 4px 18px rgba(0,0,0,.08);overflow:hidden;
+    aspect-ratio:1/1.414;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+  .page canvas{display:block;width:100%;height:auto;pointer-events:none}
+  .vstatus{text-align:center;color:var(--muted);padding:60px 20px}
+  .shieldmsg{display:none}
+  body.shield #pages{filter:blur(22px)}
+  body.shield .shieldmsg{display:flex;position:fixed;inset:0;z-index:50;align-items:center;justify-content:center;
+    color:var(--ink);font:600 16px Inter;background:rgba(250,247,242,.4)}
+  /* ---------- Decorative theme ---------- */
+  :root{--pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23c8a24a' stroke-opacity='.55' stroke-width='1.3'%3E%3Cpath d='M60 12c11 17 11 31 0 46c-11-15-11-29 0-46z'/%3E%3Cpath d='M60 108c11-17 11-31 0-46c-11 15-11 29 0 46z'/%3E%3Cpath d='M12 60c17-11 31-11 46 0c-15 11-29 11-46 0z'/%3E%3Cpath d='M108 60c-17-11-31-11-46 0c15 11 29 11 46 0z'/%3E%3Ccircle cx='60' cy='60' r='5'/%3E%3Ccircle cx='0' cy='0' r='16'/%3E%3Ccircle cx='120' cy='0' r='16'/%3E%3Ccircle cx='0' cy='120' r='16'/%3E%3Ccircle cx='120' cy='120' r='16'/%3E%3Cpath d='M0 30h8M30 0v8M112 90h8M90 112v8M0 90h8M90 0v8M112 30h8M30 112v8'/%3E%3C/g%3E%3C/svg%3E")}
+  body.deco{background-color:#3a0d16;background-image:linear-gradient(160deg,rgba(110,22,38,.80),rgba(30,8,12,.88)),var(--pattern);
+    background-size:auto,120px 120px;min-height:100vh}
+  body.deco.hasimg{background-image:linear-gradient(160deg,rgba(90,16,30,.78),rgba(20,6,10,.90)),var(--bgimg);background-size:cover;background-position:center}
+  body.deco .top{background:rgba(30,8,12,.35);border-bottom-color:rgba(200,162,74,.28)}
+  body.deco .brand{color:var(--gold);letter-spacing:1.5px}
+  body.deco .ghost{color:#f1e6d0;border-color:rgba(200,162,74,.4)}
+  body.deco .card{border:0;border-top:4px solid var(--gold);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+  body.deco .loading{color:#f1e6d0}
+  .center-wrap{flex-direction:column;gap:18px}
+  .tagline{display:none;color:var(--gold);font-family:'Playfair Display',serif;font-size:17px;letter-spacing:.6px;text-align:center;max-width:420px}
+  .tagline:before,.tagline:after{content:"✦";font-size:11px;margin:0 10px;vertical-align:middle;opacity:.8}
+  body.deco .tagline:not(:empty){display:block}
+  .hello{background-color:#4a1020;background-image:linear-gradient(120deg,rgba(122,31,43,.86),rgba(40,10,16,.86)),var(--pattern);
+    background-size:auto,120px 120px;color:#fff;border-radius:var(--radius);padding:30px 26px;border-bottom:4px solid var(--gold)}
+  .hello h1{color:#fff} .hello .sub{color:#e9d9bf!important}
+  /* Light theme for catalogue list + viewer */
+  :root{--light-pattern:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cg fill='none' stroke='%23b8913a' stroke-opacity='.16' stroke-width='1.2'%3E%3Cpath d='M60 12c11 17 11 31 0 46c-11-15-11-29 0-46z'/%3E%3Cpath d='M60 108c11-17 11-31 0-46c-11 15-11 29 0 46z'/%3E%3Cpath d='M12 60c17-11 31-11 46 0c-15 11-29 11-46 0z'/%3E%3Cpath d='M108 60c-17-11-31-11-46 0c15 11 29 11 46 0z'/%3E%3Ccircle cx='60' cy='60' r='5'/%3E%3Ccircle cx='0' cy='0' r='16'/%3E%3Ccircle cx='120' cy='0' r='16'/%3E%3Ccircle cx='0' cy='120' r='16'/%3E%3Ccircle cx='120' cy='120' r='16'/%3E%3C/g%3E%3C/svg%3E")}
+  body:not(.deco){background-color:#faf6ee;background-image:radial-gradient(ellipse at top,rgba(255,255,255,.9),rgba(250,246,238,.6) 60%),var(--light-pattern);
+    background-size:auto,120px 120px;background-attachment:fixed}
+  body.hasimg:not(.deco){background-image:linear-gradient(rgba(250,246,238,.90),rgba(250,246,238,.94)),var(--bgimg);background-size:cover;background-position:center}
+  body:not(.deco) .top{background:rgba(250,246,238,.85)}
+  .vbar{background:rgba(255,255,255,.92);backdrop-filter:blur(8px)}
+  #scrViewer{background:transparent}
+  .page{box-shadow:0 8px 30px rgba(90,50,20,.14)}
+  @media print{body{display:none!important}}
+</style>
+</head>
+<body class="deco">
+<header class="top">
+  <div class="brand" id="brand"></div>
+  <button id="logoutBtn" class="ghost hidden">Log out</button>
+</header>
+
+<section id="scrLoading" class="screen center-wrap">
+  <div class="loading"><div class="spinner"></div><div id="loadingMsg">Loading…</div></div>
+</section>
+
+<section id="scrMsg" class="screen center-wrap hidden">
+  <div class="card" style="text-align:center">
+    <h2 id="msgTitle"></h2>
+    <p class="sub" id="msgText"></p>
+    <button id="msgBtn" class="btn hidden">Log in with mobile number</button>
+  </div>
+</section>
+
+<section id="scrPhone" class="screen center-wrap hidden">
+  <div class="tagline"></div>
+  <div class="card">
+    <h2>View our catalogues</h2>
+    <p class="sub">Enter your WhatsApp number. We'll send you a one-time code to log in.</p>
+    <label>Mobile number</label>
+    <div class="field"><span>+91</span><input id="phone" type="tel" inputmode="numeric" maxlength="14" placeholder="98765 43210" autocomplete="tel"></div>
+    <div class="err" id="phoneErr"></div>
+    <button class="btn" id="sendBtn">Send OTP on WhatsApp</button>
+    <div class="note">Your number is used only to share catalogues with you.</div>
+  </div>
+</section>
+
+<section id="scrOtp" class="screen center-wrap hidden">
+  <div class="card">
+    <h2>Enter the code</h2>
+    <p class="sub" id="otpSub"></p>
+    <div id="testBox" class="testcode hidden"></div>
+    <div class="field otp"><input id="otp" type="tel" inputmode="numeric" maxlength="6" placeholder="••••••" autocomplete="one-time-code"></div>
+    <div class="err" id="otpErr"></div>
+    <button class="btn" id="verifyBtn">Verify &amp; continue</button>
+    <div style="display:flex;justify-content:space-between">
+      <button class="link" id="changeBtn">Change number</button>
+      <button class="link" id="resendBtn" disabled>Resend</button>
+    </div>
+  </div>
+</section>
+
+<section id="scrDetails" class="screen center-wrap hidden">
+  <div class="card">
+    <h2>Welcome!</h2>
+    <p class="sub">Just a few details before you see the catalogues.</p>
+    <label>Your name</label>
+    <div class="field"><input id="dName" maxlength="60" placeholder="Full name" autocomplete="name"></div>
+    <label>Company / shop name</label>
+    <div class="field"><input id="dCompany" maxlength="80" placeholder="Company name" autocomplete="organization"></div>
+    <label>City</label>
+    <div class="field"><input id="dCity" maxlength="40" placeholder="City"></div>
+    <div class="err" id="detErr"></div>
+    <button class="btn" id="detBtn">Show catalogues</button>
+  </div>
+</section>
+
+<section id="scrForm" class="screen center-wrap hidden">
+  <div class="tagline"></div>
+  <div class="card">
+    <h2>View our catalogues</h2>
+    <p class="sub">Please share a few details to see our latest collections.</p>
+    <label>Your name</label>
+    <div class="field"><input id="fName" maxlength="60" placeholder="Full name" autocomplete="name"></div>
+    <label>Mobile number</label>
+    <div class="field"><span>+91</span><input id="fPhone" type="tel" inputmode="numeric" maxlength="14" placeholder="98765 43210" autocomplete="tel"></div>
+    <label>Company / shop name</label>
+    <div class="field"><input id="fCompany" maxlength="80" placeholder="Company name" autocomplete="organization"></div>
+    <label>City</label>
+    <div class="field"><input id="fCity" maxlength="40" placeholder="City"></div>
+    <div class="err" id="formErr"></div>
+    <button class="btn" id="formBtn">View catalogues</button>
+    <div class="note">Your details are used only to share catalogues with you.</div>
+  </div>
+</section>
+
+<section id="scrLibrary" class="screen hidden">
+  <div class="lib">
+    <div class="hello"><h1 id="helloName"></h1><p class="sub" style="margin:0">Choose a catalogue to view.</p></div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<section id="scrViewer" class="hidden">
+  <div class="vbar">
+    <button class="ghost" id="backBtn">← Back</button>
+    <h3 id="vTitle"></h3>
+    <span class="pill" id="vPage"></span>
+  </div>
+  <div class="progress"><div id="vProg"></div></div>
+  <div class="vstatus" id="vStatus"></div>
+  <div id="pages"></div>
+  <div class="shieldmsg">Tap here to continue viewing</div>
+</section>
+
+<script>
+// ===== Your Apps Script web app link (ends with /exec) =====
+const API_URL = 'https://script.google.com/macros/s/AKfycbwK67ZsFAMRQfXSDNOGowhlkoQozioCkHjuqRrK9A7ZfQ6jjypn0Bn6mI4oyJKe6A/exec';
+const BOOT = { linkToken: (new URLSearchParams(location.search).get('c') || '').replace(/[^A-Za-z0-9]/g, '').slice(0, 64),
+  otpMode: 'OFF', brand: '', tagline: '', bg: '', wm: 'STRIP' };
+const $ = id => document.getElementById(id);
+const SCREENS = ['scrLoading','scrMsg','scrForm','scrPhone','scrOtp','scrDetails','scrLibrary','scrViewer'];
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+let S = { session:null, profile:null, catalogues:[], method:'', phone:'', pending:null };
+let V = null;
+
+const DECO = ['scrLoading','scrMsg','scrForm','scrPhone','scrOtp','scrDetails'];
+function show(id){
+  SCREENS.forEach(s => $(s).classList.toggle('hidden', s !== id));
+  document.body.classList.toggle('deco', DECO.includes(id));
+  window.scrollTo(0,0);
+}
+async function call(fn, ...args){
+  let r;
+  try { r = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ fn, args }) }); }
+  catch(e) { throw new Error('Could not connect. Please check your internet and try again.'); }
+  let j;
+  try { j = await r.json(); } catch(e) { throw new Error('Server is busy. Please try again in a minute.'); }
+  if (j.error) throw new Error(j.error);
+  return j.result;
+}
+function errText(e){ return String((e && e.message) || e || 'Something went wrong').replace(/^(Exception|Error|ScriptError):\s*/i,''); }
+function busy(btn, on, txt){ btn.disabled = on; if (txt) btn.textContent = txt; }
+function showMsg(title, text, allowPhone){
+  $('msgTitle').textContent = title; $('msgText').textContent = text;
+  $('msgBtn').classList.toggle('hidden', !(allowPhone && BOOT.otpMode !== 'OFF'));
+  $('msgBtn').textContent = BOOT.otpMode === 'FORM' ? 'Enter my details' : 'Log in with mobile number';
+  show('scrMsg');
+}
+
+/* ---------- Start ---------- */
+async function boot(){
+  try { Object.assign(BOOT, await call('getConfig')); }
+  catch(e) { return showMsg('Please try again', errText(e), false); }
+  document.title = BOOT.brand + ' | E-Catalogues';
+  $('brand').textContent = BOOT.brand;
+  document.querySelectorAll('.tagline').forEach(t => t.textContent = BOOT.tagline || '');
+  if (BOOT.bg && /^https:\/\/[^\s"'()<>\\]+$/.test(BOOT.bg)) {
+    document.body.style.setProperty('--bgimg', 'url("' + BOOT.bg + '")');
+    document.body.classList.add('hasimg');
+  }
+  if (window.pdfjsLib) setupWorker();
+  try {
+    let r = null;
+    if (BOOT.linkToken) {
+      r = await call('loginWithLink', BOOT.linkToken);
+    } else {
+      const s = store.get('ecat_s');
+      if (s) { try { r = await call('resumeSession', s); } catch(e){ store.del('ecat_s'); } }
+    }
+    if (r) return enter(r);
+    startPhoneLogin();
+  } catch(e) {
+    showMsg('Link not working', errText(e), true);
+  }
+}
+function startPhoneLogin(){
+  if (BOOT.otpMode === 'FORM') { show('scrForm'); return; }
+  if (BOOT.otpMode === 'OFF') showMsg('Private catalogue', 'Please open the personal link shared with you by our team.', false);
+  else show('scrPhone');
+}
+function enter(r){
+  S.session = r.session; S.profile = r.profile; S.catalogues = r.catalogues || []; S.method = r.method;
+  store.set('ecat_s', r.session);
+  $('logoutBtn').classList.toggle('hidden', !BOOT.otpMode || BOOT.otpMode === 'OFF' || !!BOOT.linkToken);
+  renderLibrary();
+  show('scrLibrary');
+}
+$('msgBtn').onclick = () => startPhoneLogin();
+$('formBtn').onclick = async () => {
+  const n = $('fName').value.trim(), ph = $('fPhone').value.replace(/\D/g,''), c = $('fCompany').value.trim(), city = $('fCity').value.trim();
+  $('formErr').textContent = '';
+  if (!n) { $('formErr').textContent = 'Please enter your name.'; return; }
+  if (ph.slice(-10).length !== 10 || ph.length > 12) { $('formErr').textContent = 'Please enter your 10-digit mobile number.'; return; }
+  if (!c) { $('formErr').textContent = 'Please enter your company / shop name.'; return; }
+  busy($('formBtn'), true, 'Please wait…');
+  try { enter(await call('registerClient', n, ph, c, city)); }
+  catch(e) { $('formErr').textContent = errText(e); }
+  busy($('formBtn'), false, 'View catalogues');
+};
+$('logoutBtn').onclick = () => { store.del('ecat_s'); S = { session:null }; closeViewer(); startPhoneLogin(); };
+
+/* ---------- Phone + OTP ---------- */
+let resendTimer = null;
+$('sendBtn').onclick = sendOtp;
+$('phone').addEventListener('keydown', e => { if (e.key === 'Enter') sendOtp(); });
+async function sendOtp(){
+  const digits = $('phone').value.replace(/\D/g,'');
+  $('phoneErr').textContent = '';
+  if (digits.length < 10) { $('phoneErr').textContent = 'Please enter your 10-digit mobile number.'; return; }
+  busy($('sendBtn'), true, 'Sending…');
+  try {
+    const r = await call('requestOtp', digits);
+    S.phone = digits;
+    $('otpSub').textContent = 'We sent a 6-digit code on WhatsApp to +91 ' + digits.slice(-10) + '.';
+    $('testBox').classList.toggle('hidden', !r.test);
+    if (r.test) $('testBox').textContent = 'TEST MODE – your code is ' + r.code;
+    $('otp').value = ''; $('otpErr').textContent = '';
+    show('scrOtp'); setTimeout(() => $('otp').focus(), 100);
+    startResend();
+  } catch(e) { $('phoneErr').textContent = errText(e); }
+  busy($('sendBtn'), false, 'Send OTP on WhatsApp');
+}
+function startResend(){
+  let t = 30; const b = $('resendBtn'); b.disabled = true; b.textContent = 'Resend in ' + t + 's';
+  clearInterval(resendTimer);
+  resendTimer = setInterval(() => { t--; if (t <= 0){ clearInterval(resendTimer); b.disabled = false; b.textContent = 'Resend OTP'; } else b.textContent = 'Resend in ' + t + 's'; }, 1000);
+}
+$('resendBtn').onclick = () => { $('phone').value = S.phone; show('scrPhone'); sendOtp(); };
+$('changeBtn').onclick = () => show('scrPhone');
+$('otp').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,''); if (e.target.value.length === 6) verify(); });
+$('verifyBtn').onclick = verify;
+async function verify(){
+  const code = $('otp').value.trim();
+  if (code.length !== 6) { $('otpErr').textContent = 'Enter the 6-digit code.'; return; }
+  busy($('verifyBtn'), true, 'Checking…'); $('otpErr').textContent = '';
+  try {
+    const r = await call('verifyOtp', S.phone, code);
+    if (r.needDetails) { S.pending = r.pending; show('scrDetails'); setTimeout(() => $('dName').focus(), 100); }
+    else enter(r);
+  } catch(e) { $('otpErr').textContent = errText(e); }
+  busy($('verifyBtn'), false, 'Verify & continue');
+}
+$('detBtn').onclick = async () => {
+  const n = $('dName').value.trim(), c = $('dCompany').value.trim(), city = $('dCity').value.trim();
+  $('detErr').textContent = '';
+  if (!n || !c) { $('detErr').textContent = 'Please enter your name and company.'; return; }
+  busy($('detBtn'), true, 'Please wait…');
+  try { enter(await call('completeSignup', S.pending, n, c, city)); }
+  catch(e) { $('detErr').textContent = errText(e); }
+  busy($('detBtn'), false, 'Show catalogues');
+};
+
+/* ---------- Library ---------- */
+const PALETTE = [['#7a1f2b','#c8a24a'],['#1f3a5f','#6a9bc3'],['#2e4a3a','#9bbf8a'],['#5b2a6e','#d39bd8'],['#8a4b1c','#e2b07a'],['#23313a','#8aa1ad']];
+function hash(s){ let h = 0; for (const ch of s) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h; }
+function renderLibrary(){
+  $('helloName').textContent = 'Welcome' + (S.profile && S.profile.name ? ', ' + S.profile.name.split(' ')[0] : '');
+  const g = $('grid'); g.innerHTML = '';
+  if (!S.catalogues.length) {
+    g.innerHTML = '<div class="empty">No catalogues are shared with you yet. Our team will share them with you shortly.</div>';
+    return;
+  }
+  S.catalogues.forEach(cat => {
+    const [a, b] = PALETTE[hash(cat.id) % PALETTE.length];
+    const el = document.createElement('div'); el.className = 'cat';
+    const cover = document.createElement('div'); cover.className = 'cover';
+    cover.style.background = 'linear-gradient(135deg,' + a + ',' + b + ')';
+    const t = document.createElement('b'); t.textContent = cat.name; cover.appendChild(t);
+    const meta = document.createElement('div'); meta.className = 'meta';
+    const p = document.createElement('p'); p.textContent = cat.desc || '';
+    const s = document.createElement('span'); s.textContent = 'View catalogue →';
+    meta.append(p, s); el.append(cover, meta);
+    el.onclick = () => openCat(cat);
+    g.appendChild(el);
+  });
+}
+
+/* ---------- Viewer ---------- */
+function setupWorker(){
+  const src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  pdfjsLib.GlobalWorkerOptions.workerSrc = src;
+  fetch(src).then(r => r.text()).then(code => {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([code], { type:'text/javascript' }));
+  }).catch(() => {});
+}
+function deviceInfo(){
+  const u = navigator.userAgent;
+  const os = /Android/i.test(u) ? 'Android' : /iPhone|iPad|iPod/i.test(u) ? 'iOS' : /Windows/i.test(u) ? 'Windows' : /Mac/i.test(u) ? 'Mac' : /Linux/i.test(u) ? 'Linux' : 'Other';
+  const br = /Edg\//.test(u) ? 'Edge' : /SamsungBrowser/.test(u) ? 'Samsung' : /Chrome\//.test(u) ? 'Chrome' : /Firefox\//.test(u) ? 'Firefox' : /Safari\//.test(u) ? 'Safari' : 'Browser';
+  const type = /Mobi|Android|iPhone/i.test(u) ? 'Mobile' : /iPad|Tablet/i.test(u) ? 'Tablet' : 'Desktop';
+  return type + ' · ' + os + ' · ' + br + ' · ' + screen.width + 'x' + screen.height;
+}
+function b64ToBytes(parts){
+  const bins = parts.map(p => atob(p));
+  const out = new Uint8Array(bins.reduce((n, b) => n + b.length, 0));
+  let o = 0;
+  bins.forEach(b => { for (let i = 0; i < b.length; i++) out[o++] = b.charCodeAt(i); });
+  return out;
+}
+function ranges(set){
+  const a = [...set].sort((x, y) => x - y), out = [];
+  for (let i = 0; i < a.length; i++){ let j = i; while (j + 1 < a.length && a[j + 1] === a[j] + 1) j++; out.push(i === j ? a[i] : a[i] + '-' + a[j]); i = j; }
+  return out.join(', ');
+}
+async function openCat(cat){
+  closeViewer();
+  show('scrViewer');
+  $('vTitle').textContent = cat.name; $('vPage').textContent = ''; $('pages').innerHTML = '';
+  $('vProg').style.width = '5%'; $('vStatus').textContent = 'Opening catalogue…'; $('vStatus').classList.remove('hidden');
+  const my = V = { cat, seen:new Set(), seconds:0, total:0, info:null, pdf:null, obs:[], timer:null, lastFlush:0 };
+  try {
+    my.info = await call('openCatalogue', S.session, cat.id, deviceInfo());
+    let done = 0;
+    const parts = await Promise.all(Array.from({ length: my.info.chunks }, (_, i) =>
+      call('getPdfChunk', S.session, cat.id, i).then(b => { done++; $('vProg').style.width = (10 + 80 * done / my.info.chunks) + '%'; return b; })));
+    if (V !== my) return;
+    $('vStatus').textContent = 'Preparing pages…';
+    my.pdf = await pdfjsLib.getDocument({ data: b64ToBytes(parts) }).promise;
+    if (V !== my) { my.pdf.destroy(); return; }
+    my.total = my.pdf.numPages;
+    const first = (await my.pdf.getPage(1)).getViewport({ scale:1 });
+    $('vStatus').classList.add('hidden'); $('vProg').style.width = '100%';
+    buildPages(my, first.width / first.height);
+    my.timer = setInterval(() => tick(my), 1000);
+  } catch(e) {
+    if (V === my) { $('vStatus').textContent = errText(e); $('vProg').style.width = '0'; }
+  }
+}
+function buildPages(my, ratio){
+  const box = $('pages');
+  const renderObs = new IntersectionObserver(ents => ents.forEach(en => { if (en.isIntersecting) renderPage(my, en.target); }), { rootMargin:'800px 0px' });
+  const seenObs = new IntersectionObserver(ents => ents.forEach(en => {
+    if (en.isIntersecting) { const n = Number(en.target.dataset.n); my.seen.add(n); $('vPage').textContent = 'Page ' + n + ' / ' + my.total; }
+  }), { threshold:0.5 });
+  my.obs = [renderObs, seenObs];
+  for (let n = 1; n <= my.total; n++){
+    const d = document.createElement('div'); d.className = 'page'; d.dataset.n = n;
+    d.style.aspectRatio = ratio; d.textContent = 'Page ' + n;
+    box.appendChild(d); renderObs.observe(d); seenObs.observe(d);
+  }
+}
+async function renderPage(my, holder){
+  if (holder.dataset.done || V !== my) return;
+  holder.dataset.done = '1';
+  try {
+    const page = await my.pdf.getPage(Number(holder.dataset.n));
+    const v1 = page.getViewport({ scale:1 });
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const vp = page.getViewport({ scale: (holder.clientWidth / v1.width) * dpr });
+    const c = document.createElement('canvas');
+    c.width = Math.floor(vp.width); c.height = Math.floor(vp.height);
+    await page.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+    if (V !== my) return;
+    watermark(c);
+    holder.style.aspectRatio = v1.width / v1.height;
+    holder.textContent = ''; holder.appendChild(c);
+  } catch(e) { holder.dataset.done = ''; }
+}
+function watermark(c){
+  if (BOOT.wm === 'OFF') return;
+  const x = c.getContext('2d'), p = S.profile || {};
+  const text = [p.name, p.company, p.phone].filter(Boolean).join(' · ');
+  const date = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+  const fs = Math.max(14, c.width / 30);
+  if (BOOT.wm === 'FULL') {
+  x.save();
+  x.font = '600 ' + fs + 'px Inter, Arial, sans-serif';
+  x.fillStyle = 'rgba(90,90,90,0.16)';
+  x.translate(c.width / 2, c.height / 2); x.rotate(-Math.PI / 6);
+  const w = x.measureText(text).width + fs * 4, h = fs * 6, R = Math.hypot(c.width, c.height);
+  let row = 0;
+  for (let yy = -R; yy < R; yy += h, row++) for (let xx = -R; xx < R; xx += w) x.fillText(text, xx + (row % 2 ? w / 2 : 0), yy);
+  x.restore();
+  }
+  const fs2 = Math.max(11, c.width / 62), bh = fs2 * 2.2;
+  x.fillStyle = 'rgba(255,255,255,0.78)'; x.fillRect(0, c.height - bh, c.width, bh);
+  x.fillStyle = 'rgba(122,31,43,0.9)'; x.font = '600 ' + fs2 + 'px Inter, Arial, sans-serif';
+  x.textBaseline = 'middle'; x.textAlign = 'center';
+  x.fillText('Confidential · Shared only with ' + text + ' · ' + date, c.width / 2, c.height - bh / 2);
+  x.textAlign = 'start';
+}
+function tick(my){
+  if (V !== my) return;
+  if (document.visibilityState === 'visible' && !document.body.classList.contains('shield')) my.seconds++;
+  if (my.seconds - my.lastFlush >= 15) flush(my);
+}
+function flush(my){
+  if (!my || !my.info || !S.session) return;
+  my.lastFlush = my.seconds;
+  fetch(API_URL, { method:'POST', keepalive:true,
+    body: JSON.stringify({ fn:'logProgress', args:[S.session, my.info.row, my.info.viewId, my.seconds, ranges(my.seen), my.total] }) }).catch(() => {});
+}
+function closeViewer(){
+  const my = V; V = null;
+  document.body.classList.remove('shield');
+  if (!my) return;
+  clearInterval(my.timer); my.obs.forEach(o => o.disconnect());
+  flush(my);
+  if (my.pdf) my.pdf.destroy();
+  $('pages').innerHTML = '';
+}
+$('backBtn').onclick = () => { closeViewer(); show('scrLibrary'); };
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && V) flush(V); });
+window.addEventListener('pagehide', () => { if (V) flush(V); });
+
+/* ---------- Protection ---------- */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('dragstart', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  const k = (e.key || '').toLowerCase();
+  if ((e.ctrlKey || e.metaKey) && ['s','p','c','u','a'].includes(k) && e.target.tagName !== 'INPUT') e.preventDefault();
+  if (k === 'printscreen' && V) { document.body.classList.add('shield'); try { navigator.clipboard.writeText(''); } catch(err){} }
+});
+window.addEventListener('blur', () => { if (V) document.body.classList.add('shield'); });
+window.addEventListener('focus', () => document.body.classList.remove('shield'));
+document.querySelector('.shieldmsg').addEventListener('click', () => document.body.classList.remove('shield'));
+
+boot();
+</script>
+</body>
+</html>
